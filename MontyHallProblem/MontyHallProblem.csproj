@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MontyHallProblem</RootNamespace>
     <AssemblyName>MontyHallProblem</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameStrategies\IGameStrategy.cs" />
+    <Compile Include="GameStrategies\GameStrategy.cs" />
     <Compile Include="GameStrategies\NonSelectedDoorStrategy.cs" />
     <Compile Include="GameStrategies\NonWinningDoorStrategy.cs" />
     <Compile Include="GameStrategies\NonWinningNonSelectedDoorStrategy.cs" />

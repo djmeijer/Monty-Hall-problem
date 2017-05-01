@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MontyHallProblem.GameStrategies;
 
 namespace MontyHallProblem
@@ -9,18 +11,27 @@ namespace MontyHallProblem
   {
     static void Main()
     {
-      IGameStrategy strategy = new RandomDoorStrategy();
-      //IGameStrategy strategy = new NonSelectedDoorStrategy();
-      //IGameStrategy strategy = new NonWinningDoorStrategy();
-      //IGameStrategy strategy = new NonWinningNonSelectedDoorStrategy();
-      int gamesPerLoop = 10000;
-      int numberOfDoors = 3;
+      const int gamesPerLoop = 1000000;
+      const int numberOfDoors = 3;
 
-      int winnings = 0;
-      int losses = 0;
-      while(true)
+      List<GameStrategy> strategies = new List<GameStrategy>
       {
-        for(int i = 0; i < gamesPerLoop; i++)
+        new RandomDoorStrategy(),
+        new NonSelectedDoorStrategy(),
+        new NonWinningDoorStrategy(),
+        new NonWinningNonSelectedDoorStrategy()
+      };
+
+      Console.WriteLine($"So we play the game with {numberOfDoors} doors and we repeat it {gamesPerLoop} times to collect the data.");
+      Console.WriteLine($"We use {strategies.Count} different opening strategies.");
+      Console.WriteLine("Now the question is whether you get a better change of winning when you switch to the other door at the final step in the game.\n");
+
+      foreach(GameStrategy strategy in strategies)
+      {
+        int winnings = 0;
+        int losses = 0;
+
+        Parallel.For(0, gamesPerLoop, i =>
         {
           bool gameEnded = false;
           List<int> doors = GetDoors(numberOfDoors);
@@ -36,22 +47,25 @@ namespace MontyHallProblem
 
           if(!gameEnded)
           {
-            choosenDoor = doors.First(n => n != choosenDoor);
-            bool winst = choosenDoor == winningDoor;
+            var newChoosenDoor = doors.First(d => d != choosenDoor);
+            bool winst = newChoosenDoor == winningDoor;
 
             if(winst)
             {
-              winnings++;
+              Interlocked.Increment(ref winnings);
             }
             else
             {
-              losses++;
+              Interlocked.Increment(ref losses);
             }
           }
-        }
-        Console.WriteLine($"{winnings}+, {losses}-, {100*winnings/(winnings+losses)}% win");
-        Console.ReadKey();
+        });
+
+        Console.WriteLine($"{strategy}: {winnings}+, {losses}-, {100 * winnings / (winnings + losses)}% win");
       }
+
+      Console.WriteLine("\nDone! (press a key)");
+      Console.ReadKey();
     }
 
     private static List<int> GetDoors(int n)

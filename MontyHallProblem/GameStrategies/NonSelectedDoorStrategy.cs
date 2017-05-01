@@ -4,11 +4,13 @@ using System.Linq;
 
 namespace MontyHallProblem.GameStrategies
 {
-  public class NonSelectedDoorStrategy : IGameStrategy
+  public class NonSelectedDoorStrategy : GameStrategy
   {
-    public int OpenDoor(List<int> doors, int choosenDoor, int winningDoor)
+    public override int OpenDoor(List<int> doors, int choosenDoor, int winningDoor)
     {
       return doors.Where(n => n != choosenDoor).OrderBy(d => Guid.NewGuid()).First();
     }
+
+    public override string ToString() => "Open random door, but not selected door";
   }
 }
